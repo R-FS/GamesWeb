@@ -1,0 +1,312 @@
+/* Tic-Tac-Toe Game Styles */
+
+/* Game Container */
+.game-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* Game Board */
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto 2rem;
+    background: #f0f0f0;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Game Cell */
+.cell {
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    color: var(--text);
+    position: relative;
+    overflow: hidden;
+}
+
+.cell:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary);
+    z-index: 1;
+}
+
+.cell:hover:not(.disabled) {
+    background: var(--card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+.cell:active:not(.disabled) {
+    transform: translateY(0);
+}
+
+.cell.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.cell.winning {
+    animation: pop 0.5s ease;
+    background: var(--card-hover);
+    position: relative;
+}
+
+.cell.winning::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        transparent 45%, 
+        var(--primary) 50%, 
+        transparent 55%);
+    background-size: 200% 200%;
+    animation: shine 1.5s infinite;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Player X and O */
+.cell[data-player="X"] {
+    color: var(--player-x, #ff6b6b);
+    text-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+    position: relative;
+}
+
+.cell[data-player="O"] {
+    color: var(--player-o, #4ecdc4);
+    text-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+    position: relative;
+}
+
+/* Add a subtle glow effect to the current player's symbol */
+@keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 10px currentColor; }
+    50% { text-shadow: 0 0 20px currentColor; }
+}
+
+.current-player .cell[data-player="X"]::before,
+.current-player .cell[data-player="O"]::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid currentColor;
+    border-radius: 12px;
+    opacity: 0.5;
+    animation: pulse 2s infinite;
+}
+
+/* Status Display */
+#status {
+    text-align: center;
+    margin: 1rem 0 2rem;
+    font-size: 1.2rem;
+    min-height: 2rem;
+    color: var(--text);
+    background: var(--card-bg);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    display: inline-block;
+    margin: 0 auto 2rem;
+    min-width: 200px;
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+/* Game Controls */
+.game-controls {
+    max-width: 500px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Scoreboard */
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+    background: var(--background);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    gap: 0.5rem;
+}
+
+.score {
+    text-align: center;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    background: var(--card-bg);
+}
+
+.score.active {
+    border-color: currentColor;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+.score-x {
+    color: var(--player-x, #ff6b6b);
+}
+
+.score-o {
+    color: var(--player-o, #4ecdc4);
+}
+
+.score-tie {
+    color: var(--text-secondary);
+}
+
+.score span {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+/* Mode Buttons */
+.game-modes {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.mode-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.mode-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    color: var(--text);
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+}
+
+.mode-btn:hover,
+.mode-btn:focus {
+    background: #f0f0f0;
+    border-color: #999;
+    outline: none;
+}
+
+.mode-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #2980b9;
+}
+
+/* Back to Home Link */
+.back-to-home {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.back-to-home a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.back-to-home a:hover,
+.back-to-home a:focus {
+    color: #2980b9;
+    text-decoration: underline;
+    outline: none;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .game-container {
+        padding: 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .status {
+        font-size: 1rem;
+    }
+    
+    .cell {
+        font-size: 2rem;
+    }
+    
+    .scoreboard {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .score {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .mode-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .mode-btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+    }
+}
+
+/* Animation for winning cells */
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px -10px #3498db;
+    }
+    to {
+        box-shadow: 0 0 20px 5px #3498db;
+    }
+}

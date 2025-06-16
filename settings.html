@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Retro Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="js/themeManager.js" defer></script>
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .settings-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .settings-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 0 #000;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-info h3 {
+            margin: 0 0 0.3rem 0;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .setting-info p {
+            margin: 0;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: #555;
+            margin-bottom: 2rem;
+        }
+
+        .btn-back:hover {
+            background: #777;
+        }
+
+        
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Range Slider */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            max-width: 250px;
+        }
+        
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .volume-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 1.5rem;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .setting-control {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>⚙️ Settings</h1>
+                    <p class="subtitle">Customize your gaming experience</p>
+                </div>
+                <button id="muteBtn" class="mute-btn" aria-label="Toggle sound">
+                    <span class="sound-on">🔊</span>
+                    <span class="sound-off">🔇</span>
+                </button>
+            </div>
+        </header>
+        
+        <main>
+            <a href="index.html" class="btn btn-back">← Back to Games</a>
+            
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h2>Audio Settings</h2>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Sound Effects</h3>
+                            <p>Enable or disable all game sound effects</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="switch">
+                                <input type="checkbox" id="soundToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Volume</h3>
+                            <p>Adjust the volume level for all sounds</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="volume-control">
+                                <span class="volume-icon">🔈</span>
+                                <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider">
+                                <span class="volume-icon">🔊</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h2>Game Settings</h2>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Default Game Mode</h3>
+                            <p>Choose the default mode when starting games</p>
+                        </div>
+                        <div class="setting-control">
+                            <select id="defaultMode" class="btn">
+                                <option value="pvp">Player vs Player</option>
+                                <option value="ai">Player vs AI</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Difficulty</h3>
+                            <p>Set the default difficulty for AI opponents</p>
+                        </div>
+                        <div class="setting-control">
+                            <select id="difficulty" class="btn">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h2>Appearance</h2>
+                    
+                    <!-- Theme selector removed - Only Retro theme is available -->
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Animations</h3>
+                            <p>Enable or disable UI animations</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="switch">
+                                <input type="checkbox" id="animationsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h2>Reset</h2>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Reset All Settings</h3>
+                            <p>Restore all settings to their default values</p>
+                        </div>
+                        <div class="setting-control">
+                            <button id="resetSettings" class="btn">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 Retro Arcade | All games built with ♥</p>
+        </footer>
+    </div>
+    
+    <script src="js/soundManager.js"></script>
+    <script src="js/themeManager.js"></script>
+    <script>
+        // Apply retro theme
+        function applyRetroTheme() {
+            document.documentElement.setAttribute('data-theme', 'retro');
+            document.documentElement.className = document.documentElement.className
+                .split(' ')
+                .filter(cls => !cls.startsWith('theme-'))
+                .join(' ');
+            document.documentElement.classList.add('theme-retro');
+            localStorage.setItem('theme', 'retro');
+        }
+        
+        // Apply retro theme on page load and page show
+        function initializeTheme() {
+            if (window.themeManager) {
+                window.themeManager.setTheme('retro', true);
+            } else {
+                applyRetroTheme();
+            }
+        }
+        
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', initializeTheme);
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                initializeTheme();
+            }
+        });
+        
+        // Ensure theme manager is initialized
+        if (!window.themeManager) {
+            window.themeManager = new ThemeManager();
+        }
+        
+        // Initial theme application
+        initializeTheme();
+        // Initialize sound manager
+        const soundManager = new SoundManager();
+        soundManager.setVolume(0.3);
+        
+        // Load settings from localStorage
+        function loadSettings() {
+            // Sound settings
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            document.getElementById('soundToggle').checked = soundEnabled;
+            
+            // Volume
+            const volume = localStorage.getItem('volume') || 30;
+            document.getElementById('volumeSlider').value = volume;
+            soundManager.setVolume(volume / 100);
+            
+            // Game settings
+            const defaultMode = localStorage.getItem('defaultMode') || 'pvp';
+            document.getElementById('defaultMode').value = defaultMode;
+            
+            const difficulty = localStorage.getItem('difficulty') || 'medium';
+            document.getElementById('difficulty').value = difficulty;
+            
+            // Theme is always retro
+            localStorage.setItem('theme', 'retro');
+            
+            const animations = localStorage.getItem('animations') !== 'false';
+            document.getElementById('animationsToggle').checked = animations;
+        }
+        
+        // Save settings to localStorage
+        function saveSettings() {
+            // Sound settings
+            const soundEnabled = document.getElementById('soundToggle').checked;
+            localStorage.setItem('soundEnabled', soundEnabled);
+            
+            const volume = document.getElementById('volumeSlider').value;
+            localStorage.setItem('volume', volume);
+            
+            // Game settings
+            const defaultMode = document.getElementById('defaultMode').value;
+            localStorage.setItem('defaultMode', defaultMode);
+            
+            const difficulty = document.getElementById('difficulty').value;
+            localStorage.setItem('difficulty', difficulty);
+            
+            // Appearance
+            const theme = document.getElementById('theme').value;
+            localStorage.setItem('theme', theme);
+            
+            const animations = document.getElementById('animationsToggle').checked;
+            localStorage.setItem('animations', animations);
+            
+            // Apply settings
+            applySettings();
+            
+            // Show confirmation
+            showNotification('Settings saved!');
+        }
+        
+        // Apply theme using theme manager
+        function applyTheme(theme) {
+            if (!theme) return;
+            
+            if (window.themeManager) {
+                themeManager.setTheme(theme, true);
+            } else {
+                // Fallback if theme manager isn't loaded
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                // Remove all theme classes
+                document.documentElement.className = document.documentElement.className
+                    .split(' ')
+                    .filter(cls => !cls.startsWith('theme-'))
+                    .join(' ');
+                
+                // Add the new theme class
+                document.documentElement.classList.add(`theme-${theme}`);
+                
+                // Special handling for terminal theme
+                if (theme === 'terminal') {
+                    document.body.style.fontFamily = "'Courier New', monospace";
+                } else {
+                    document.body.style.fontFamily = '';
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
+            }
+        }
+        
+        // Apply all settings
+        function applySettings() {
+            // Sound
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            const volume = localStorage.getItem('volume') || 30;
+            
+            if (window.soundManager) {
+                soundManager.setMute(!soundEnabled);
+                soundManager.setVolume(volume / 100);
+            }
+            
+            // Update mute button state
+            updateMuteButton(!soundEnabled);
+            
+            // Theme - Apply through theme manager
+            const theme = localStorage.getItem('theme') || 'system';
+            applyTheme(theme);
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            // Style the notification
+            notification.style.position = 'fixed';
+            notification.style.bottom = '30px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%) translateY(20px)';
+            notification.style.background = 'rgba(0, 0, 0, 0.8)';
+            notification.style.color = 'white';
+            notification.style.padding = '10px 20px';
+            notification.style.borderRadius = '50px';
+            notification.style.fontSize = '0.9rem';
+            notification.style.zIndex = '1000';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.3s ease';
+            notification.style.pointerEvents = 'none';
+            notification.style.whiteSpace = 'nowrap';
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+            
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-50%) translateY(-20px)';
+                
+                // Remove from DOM after animation
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 2000);
+        }
+        
+        // Update mute button state
+        function updateMuteButton(isMuted) {
+            const muteBtn = document.getElementById('muteBtn');
+            if (!muteBtn) return;
+            
+            const soundOn = muteBtn.querySelector('.sound-on');
+            const soundOff = muteBtn.querySelector('.sound-off');
+            
+            if (isMuted) {
+                soundOn.style.display = 'none';
+                soundOff.style.display = 'inline';
+            } else {
+                soundOn.style.display = 'inline';
+                soundOff.style.display = 'none';
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load settings
+            loadSettings();
+            
+            // Save settings on change
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('change', saveSettings);
+            });
+            
+            // Volume slider
+            const volumeSlider = document.getElementById('volumeSlider');
+            if (volumeSlider) {
+                volumeSlider.addEventListener('input', (e) => {
+                    const volume = e.target.value / 100;
+                    soundManager.setVolume(volume);
+                    localStorage.setItem('volume', e.target.value);
+                });
+            }
+            
+            // Sound toggle
+            const soundToggle = document.getElementById('soundToggle');
+            if (soundToggle) {
+                soundToggle.addEventListener('change', (e) => {
+                    const isMuted = !e.target.checked;
+                    soundManager.setMute(isMuted);
+                    updateMuteButton(isMuted);
+                    localStorage.setItem('soundEnabled', e.target.checked);
+                });
+            }
+            
+            // Theme is always retro
+            if (window.themeManager) {
+                themeManager.setTheme('retro', true);
+            } else {
+                applyRetroTheme();
+            }
+            
+            // Reset settings
+            const resetBtn = document.getElementById('resetSettings');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to reset all settings to default?')) {
+                        localStorage.clear();
+                        loadSettings();
+                        showNotification('Settings reset to default');
+                    }
+                });
+            }
+            
+            // Mute button
+            const muteBtn = document.getElementById('muteBtn');
+            if (muteBtn) {
+                muteBtn.addEventListener('click', () => {
+                    const isMuted = soundManager.toggleMute();
+                    updateMuteButton(isMuted);
+                    document.getElementById('soundToggle').checked = !isMuted;
+                    localStorage.setItem('soundEnabled', !isMuted);
+                    
+                    // Play sound to give feedback
+                    if (!isMuted) {
+                        soundManager.play('select');
+                    }
+                    
+                    showNotification(isMuted ? '🔇 Sound Off' : '🔊 Sound On');
+                });
+            }
+            
+            // Initialize mute button state
+            const isMuted = localStorage.getItem('soundEnabled') === 'false';
+            updateMuteButton(isMuted);
+        });
+    </script>
+</body>
+</html>

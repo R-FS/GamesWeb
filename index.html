@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="js/themeManager.js"></script>
+    <script>
+        // Apply retro theme immediately
+        (function() {
+            // Remove any existing theme classes
+            document.documentElement.className = document.documentElement.className
+                .split(' ')
+                .filter(cls => !cls.startsWith('theme-'))
+                .join(' ');
+            
+            // Apply retro theme
+            document.documentElement.classList.add('theme-retro');
+            document.documentElement.setAttribute('data-theme', 'retro');
+            document.body.style.fontFamily = '';
+            
+            // Save retro theme
+            localStorage.setItem('theme', 'retro');
+        })();
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>🎮 Retro Arcade</h1>
+                    <p class="subtitle">Play classic games right in your browser</p>
+                </div>
+                <div class="header-controls">
+                    <a href="settings.html" class="btn btn-settings" aria-label="Settings">
+                        ⚙️
+                    </a>
+                    <button id="muteBtn" class="mute-btn" aria-label="Toggle sound">
+                        <span class="sound-on">🔊</span>
+                        <span class="sound-off">🔇</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <main class="games-container">
+            <h2 class="games-title">Choose a Game</h2>
+            <div class="games-grid">
+                <!-- Snake Game -->
+                <a href="games/snake/index.html" class="game-card">
+                    <div class="game-icon">
+                        <div class="game-placeholder">🐍</div>
+                        <h3>Snake</h3>
+                    </div>
+                </a>
+                
+                <!-- Tic-Tac-Toe Game -->
+                <a href="games/tictactoe/index.html" class="game-card">
+                    <div class="game-icon">
+                        <div class="game-placeholder">🎯</div>
+                        <h3>Tic-Tac-Toe</h3>
+                    </div>
+                </a>
+                
+                <!-- Memory Match Game -->
+                <a href="games/memory/index.html" class="game-card">
+                    <div class="game-icon">
+                        <div class="game-placeholder">🧩</div>
+                        <h3>Memory Match</h3>
+                    </div>
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <p>Made with ❤️ | No ads, no tracking, just fun!</p>
+        </footer>
+    </div>
+
+    <script src="js/soundManager.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Ensure theme manager is initialized
+        window.themeManager = new ThemeManager();
+        
+        // Function to apply the current theme
+        function applyCurrentTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            window.themeManager.setTheme(savedTheme, false);
+        }
+        
+        // Apply theme on page load
+        document.addEventListener('DOMContentLoaded', applyCurrentTheme);
+        
+        // Re-apply theme when page is shown (including when navigating back)
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                applyCurrentTheme();
+            }
+        });
+        
+        // Initial theme application
+        applyCurrentTheme();
+    </script>
+</body>
+</html>

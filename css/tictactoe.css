@@ -1,0 +1,221 @@
+/* Tic-Tac-Toe Game Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a2e;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.game-header h1 {
+    color: #4ecdc4;
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
+    text-shadow: 2px 2px 0 #ff6b6b;
+    letter-spacing: -1px;
+}
+
+.status {
+    font-size: 1.2rem;
+    margin: 10px 0 20px;
+    color: #ffbe76;
+    min-height: 24px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    width: 300px;
+    margin: 0 auto 20px;
+    background: #4ecdc4;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+}
+
+.cell {
+    background: #16213e;
+    border: none;
+    border-radius: 5px;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cell:hover {
+    background: #1f2f54;
+    transform: translateY(-2px);
+}
+
+.cell.x {
+    color: #ff6b6b;
+}
+
+.cell.o {
+    color: #4ecdc4;
+}
+
+.cell.winner {
+    animation: winnerPulse 0.5s infinite alternate;
+}
+
+@keyframes winnerPulse {
+    from { background: rgba(255, 214, 10, 0.2); }
+    to { background: rgba(255, 214, 10, 0.4); }
+}
+
+.controls {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 0 #d63031;
+    position: relative;
+    top: 0;
+}
+
+button:hover {
+    background-color: #ff7979;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #d63031;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #d63031;
+}
+
+button:focus {
+    outline: 2px solid #ffbe76;
+    outline-offset: 2px;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.score {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    min-width: 80px;
+}
+
+.game-modes {
+    margin: 25px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.game-modes h3 {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    color: #ffbe76;
+}
+
+.mode-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid #4ecdc4;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    box-shadow: none;
+}
+
+.mode-btn.active {
+    background: #4ecdc4;
+    color: #1a1a2e;
+    border-color: #4ecdc4;
+}
+
+.back-to-home {
+    margin-top: 30px;
+}
+
+.back-to-home a {
+    color: #7f8c8d;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: color 0.3s ease;
+}
+
+.back-to-home a:hover {
+    color: #bdc3c7;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+    .game-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .status {
+        font-size: 1rem;
+    }
+    
+    .game-board {
+        width: 280px;
+    }
+    
+    .cell {
+        font-size: 2.5rem;
+    }
+    
+    .scoreboard {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .score {
+        width: 100%;
+        text-align: center;
+    }
+}

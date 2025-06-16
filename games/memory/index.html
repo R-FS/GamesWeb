@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game | Retro Arcade</title>
+    <link rel="stylesheet" href="css/memory.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>🎮 Memory Match</h1>
+            <div class="game-controls">
+                <div class="score">Moves: <span id="moves">0</span></div>
+                <div class="time">Time: <span id="time">0</span>s</div>
+                <button id="resetBtn" class="btn">🔄 New Game</button>
+                <button id="backBtn" class="btn">🏠 Main Menu</button>
+            </div>
+        </header>
+
+        <div class="difficulty-selector">
+            <h2>Select Difficulty</h2>
+            <div class="difficulty-buttons">
+                <button data-difficulty="easy" class="btn">Easy (4×4)</button>
+                <button data-difficulty="medium" class="btn">Medium (4×5)</button>
+                <button data-difficulty="hard" class="btn">Hard (5×6)</button>
+            </div>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+            <!-- Cards will be generated here by JavaScript -->
+        </div>
+
+        <div class="win-message" id="winMessage">
+            <h2>🎉 You Win! 🎉</h2>
+            <p>Moves: <span id="finalMoves">0</span></p>
+            <p>Time: <span id="finalTime">0</span> seconds</p>
+            <button id="playAgainBtn" class="btn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="../../js/soundManager.js"></script>
+    <script src="js/memory.js"></script>
+</body>
+</html>

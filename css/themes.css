@@ -1,0 +1,169 @@
+/* Retro Theme (Only Theme) */
+:root {
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --accent: #ffe66d;
+    --background: #2d3436;
+    --surface: #1e272e;
+    --text: #f7f1e3;
+    --text-secondary: #d1ccc0;
+    --border: #3d3d3d;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --card-bg: rgba(45, 52, 54, 0.8);
+    --card-border: #ff6b6b;
+    --card-hover: rgba(255, 107, 107, 0.2);
+    --button-text: #1e272e;
+    --button-hover: #ff5252;
+    --input-bg: #2d3436;
+    --input-text: #f7f1e3;
+    --input-border: #4a5658;
+    --input-focus: #4ecdc4;
+    --header-bg: rgba(30, 39, 46, 0.9);
+    --footer-bg: #1e272e;
+    --link-color: #4ecdc4;
+    --link-hover: #ffe66d;
+}
+
+/* Retro Theme */
+[data-theme="retro"],
+.theme-retro {
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --accent: #ffe66d;
+    --background: #2d3436;
+    --surface: #1e272e;
+    --text: #f7f1e3;
+    --text-secondary: #d1ccc0;
+    --border: #3d3d3d;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --card-bg: rgba(45, 52, 54, 0.8);
+    --card-border: #ff6b6b;
+    --card-hover: rgba(255, 107, 107, 0.2);
+    --button-text: #1e272e;
+    --button-hover: #ff5252;
+    --input-bg: #2d3436;
+    --input-text: #f7f1e3;
+    --input-border: #4a5658;
+    --input-focus: #4ecdc4;
+    --header-bg: rgba(30, 39, 46, 0.9);
+    --footer-bg: #1e272e;
+    --link-color: #4ecdc4;
+    --link-hover: #ffe66d;
+}
+
+/* Retro Theme for specific selectors */
+[data-theme="retro"],
+.theme-retro {
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --accent: #ffe66d;
+    --background: #2d3436;
+    --surface: #1e272e;
+    --text: #f7f1e3;
+    --text-secondary: #d1ccc0;
+    --border: #3d3d3d;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --card-bg: rgba(45, 52, 54, 0.8);
+    --card-border: #ff6b6b;
+    --card-hover: rgba(255, 107, 107, 0.2);
+    --button-text: #1e272e;
+    --button-hover: #ff5252;
+    --input-bg: #2d3436;
+    --input-text: #f7f1e3;
+    --input-border: #4a5658;
+    --input-focus: #4ecdc4;
+    --header-bg: rgba(30, 39, 46, 0.9);
+    --footer-bg: #1e272e;
+    --link-color: #4ecdc4;
+    --link-hover: #ffe66d;
+}
+
+/* Apply theme to body */
+body {
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Update game cards */
+.game-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    transition: all 0.3s ease;
+}
+
+.game-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--shadow);
+}
+
+/* Update header and footer */
+header {
+    background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
+    border-bottom: 4px solid var(--primary);
+}
+
+footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
+
+/* Update buttons */
+.btn {
+    background: var(--primary);
+    color: white;
+    border: 2px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+/* Update form elements */
+input, select, textarea {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+/* Update settings page */
+.settings-container {
+    background: var(--surface);
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px var(--shadow);
+}
+
+.setting-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+}
+
+/* Update toggle switches */
+.switch .slider {
+    background-color: var(--border);
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+/* Update volume slider */
+.volume-slider {
+    background: var(--border) !important;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    background: var(--primary);
+}
+
+/* Update notifications */
+.notification {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px var(--shadow);
+}

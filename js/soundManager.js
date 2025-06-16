@@ -5,30 +5,60 @@ class SoundManager {
         this.sounds = {};
         this.muted = localStorage.getItem('soundMuted') === 'true' || false;
         this.volume = parseFloat(localStorage.getItem('soundVolume')) || 0.3;
-        this.initialize();
+        this.initialized = false;
+        
+        // Debug log
+        console.log('SoundManager: Initializing with volume:', this.volume, 'muted:', this.muted);
+        
+        // Initialize on first user interaction
+        this.initializeOnInteraction();
+    }
+    
+    // Initialize on first user interaction
+    initializeOnInteraction() {
+        const init = () => {
+            if (!this.initialized) {
+                this.initialize();
+                document.removeEventListener('click', init);
+                document.removeEventListener('keydown', init);
+                document.removeEventListener('touchstart', init);
+            }
+        };
+        
+        document.addEventListener('click', init);
+        document.addEventListener('keydown', init);
+        document.addEventListener('touchstart', init);
     }
 
-    // Initialize audio context on user interaction
+    // Initialize audio context
     initialize() {
+        if (this.initialized) return;
+        
         try {
+            console.log('SoundManager: Creating audio context');
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.createSounds();
+            this.initialized = true;
+            console.log('SoundManager: Initialized successfully');
             
-            // Unlock audio on first user interaction
-            const unlockAudio = () => {
-                if (this.audioContext.state === 'suspended') {
-                    this.audioContext.resume();
-                }
-                document.removeEventListener('click', unlockAudio);
-                document.removeEventListener('keydown', unlockAudio);
-                document.removeEventListener('touchstart', unlockAudio);
-            };
-            
-            document.addEventListener('click', unlockAudio);
-            document.addEventListener('keydown', unlockAudio);
-            document.addEventListener('touchstart', unlockAudio);
+            // Auto-resume if suspended
+            if (this.audioContext.state === 'suspended') {
+                console.log('SoundManager: Audio context suspended, waiting for user interaction');
+                const resume = () => {
+                    this.audioContext.resume().then(() => {
+                        console.log('SoundManager: Audio context resumed successfully');
+                        document.removeEventListener('click', resume);
+                        document.removeEventListener('keydown', resume);
+                        document.removeEventListener('touchstart', resume);
+                    });
+                };
+                
+                document.addEventListener('click', resume, { once: true });
+                document.addEventListener('keydown', resume, { once: true });
+                document.addEventListener('touchstart', resume, { once: true });
+            }
         } catch (e) {
-            console.warn('Web Audio API not supported in this browser');
+            console.error('SoundManager: Failed to initialize Web Audio API', e);
         }
     }
 
@@ -89,26 +119,50 @@ class SoundManager {
     }
 
     // Play a tone
-    playTone(frequency, duration, type = 'sine', delay = 0) {
-        if (!this.audioContext || this.muted) return;
+    playTone(frequency, duration, type = 'sine') {
+        if (this.muted || !this.audioContext) {
+            console.log('SoundManager: Sound not played - muted:', this.muted, 'audioContext:', !!this.audioContext);
+            return;
+        }
         
-        const osc = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-        
-        osc.type = type;
-        osc.frequency.value = frequency;
-        
-        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime + delay);
-        gainNode.gain.linearRampToValueAtTime(this.volume, this.audioContext.currentTime + delay + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + delay + duration);
-        
-        osc.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        
-        osc.start(this.audioContext.currentTime + delay);
-        osc.stop(this.audioContext.currentTime + delay + duration);
-        
-        return osc;
+        try {
+            // Ensure we're running
+            if (this.audioContext.state === 'suspended') {
+                console.log('SoundManager: Audio context suspended, resuming...');
+                this.audioContext.resume().catch(e => {
+                    console.error('SoundManager: Failed to resume audio context', e);
+                });
+            }
+            
+            const now = this.audioContext.currentTime;
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(frequency, now);
+            
+            // Set initial gain to avoid clicks
+            gainNode.gain.setValueAtTime(0.001, now);
+            // Quick fade in
+            gainNode.gain.exponentialRampToValueAtTime(this.volume, now + 0.01);
+            // Fade out
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+            
+            oscillator.start(now);
+            oscillator.stop(now + duration);
+            
+            // Clean up
+            oscillator.onended = () => {
+                gainNode.disconnect();
+            };
+            
+            console.log('SoundManager: Playing tone', { frequency, duration, type, volume: this.volume });
+        } catch (e) {
+            console.error('SoundManager: Error playing tone', e);
+        }
     }
 
     // Play a sound by name

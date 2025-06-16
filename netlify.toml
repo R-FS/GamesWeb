@@ -1,0 +1,36 @@
+[build]
+  # Directory to change to before starting a build
+  base = "/"
+  
+  # Directory that contains the deploy-ready HTML files and assets
+  publish = "/"
+  
+  # Default build command
+  command = ""
+
+# Redirects and headers
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Basic build settings
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Basic build settings for local development
+[dev]
+  command = "npm run dev"
+  port = 3000
+  publish = "./"
+  target = "*"
+
+# Context-specific settings
+[context.production]
+  command = ""
+  publish = "/"
+  
+[context.deploy-preview]
+  command = ""
+  publish = "/"

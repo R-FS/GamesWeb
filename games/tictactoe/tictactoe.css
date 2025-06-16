@@ -1,55 +1,130 @@
 /* Tic-Tac-Toe Game Styles */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+/* Particle effects */
+.particle {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    box-shadow: 0 0 10px 2px currentColor;
+    animation: particle-fade 0.6s ease-out forwards;
+}
+
+@keyframes particle-fade {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+}
 
 /* Game Container */
 .game-container {
     max-width: 500px;
     margin: 2rem auto;
-    padding: 1rem;
-    font-family: 'Press Start 2P', cursive;
+    padding: 2rem;
     text-align: center;
+    background-color: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.game-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    animation: rainbow 5s linear infinite;
 }
 
 h1 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    color: #333;
+    color: var(--primary);
+    text-shadow: 2px 2px 0 var(--shadow);
 }
 
 /* Game Board */
 #board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    max-width: 300px;
-    margin: 0 auto 2rem;
-    background: #f0f0f0;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    gap: 12px;
+    max-width: 320px;
+    margin: 2rem auto;
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2),
+                0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    position: relative;
+    transform: translateZ(0);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 /* Game Cell */
 .cell {
-    background: white;
-    border: 2px solid #ccc;
-    border-radius: 6px;
+    will-change: transform, box-shadow, opacity;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
     color: var(--text);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateZ(0);
+}
+
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cell:hover {
+    background: var(--card-hover);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cell:hover::before {
+    opacity: 1;
+}
+
+.cell:active {
+    transform: translateY(1px) scale(0.98);
 }
 
 .cell:focus {
     outline: none;
-    box-shadow: 0 0 0 3px var(--primary);
+    box-shadow: 0 0 0 3px var(--accent);
     z-index: 1;
 }
 
@@ -68,77 +143,81 @@ h1 {
     opacity: 0.8;
 }
 
-.cell.winning {
-    animation: pop 0.5s ease;
-    background: var(--card-hover);
+.cell.winner {
+    animation: glow 1s infinite alternate;
     position: relative;
+    z-index: 1;
 }
 
-.cell.winning::after {
+.cell.winner::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, 
-        transparent 45%, 
-        var(--primary) 50%, 
-        transparent 55%);
-    background-size: 200% 200%;
-    animation: shine 1.5s infinite;
-    opacity: 0.3;
-    pointer-events: none;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: -1;
+    border-radius: 4px;
 }
 
-/* Player X and O */
-.cell[data-player="X"] {
-    color: var(--player-x, #ff6b6b);
-    text-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
-    position: relative;
+.cell.player-x {
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
 }
 
-.cell[data-player="O"] {
-    color: var(--player-o, #4ecdc4);
-    text-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
-    position: relative;
-}
-
-/* Add a subtle glow effect to the current player's symbol */
-@keyframes pulse-glow {
-    0%, 100% { text-shadow: 0 0 10px currentColor; }
-    50% { text-shadow: 0 0 20px currentColor; }
-}
-
-.current-player .cell[data-player="X"]::before,
-.current-player .cell[data-player="O"]::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border: 2px solid currentColor;
-    border-radius: 12px;
-    opacity: 0.5;
-    animation: pulse 2s infinite;
+.cell.player-o {
+    color: var(--secondary);
+    text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
 }
 
 /* Status Display */
-#status {
-    text-align: center;
-    margin: 1rem 0 2rem;
-    font-size: 1.2rem;
-    min-height: 2rem;
-    color: var(--text);
-    background: var(--card-bg);
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--card-border);
+.status {
+    will-change: transform, opacity, background, color;
+    font-size: 1.4rem;
+    margin: 1.5rem 0 2rem;
+    min-height: 2.5rem;
+    color: var(--accent);
+    text-shadow: 1px 1px 0 var(--shadow);
+    padding: 0.8rem 1.5rem;
+    background: var(--surface);
+    border-radius: 50px;
     display: inline-block;
-    margin: 0 auto 2rem;
-    min-width: 200px;
-    box-shadow: 0 2px 6px var(--shadow);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.status::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+}
+
+.status.win-message {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.status.win-message::after {
+    transform: scaleX(1);
+}
+
+.status.draw-message {
+    color: var(--accent);
+    animation: pulse 2s infinite;
 }
 
 /* Game Controls */
@@ -155,42 +234,33 @@ h1 {
 /* Scoreboard */
 .scoreboard {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 1.5rem;
     margin: 1.5rem 0;
-    background: var(--background);
-    padding: 0.75rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .score {
-    text-align: center;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-weight: bold;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    background: var(--card-bg);
+    background: var(--surface);
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--text);
+    border: 1px solid var(--border);
+    min-width: 100px;
+    box-shadow: 0 2px 4px var(--shadow);
 }
 
-.score.active {
-    border-color: currentColor;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px var(--shadow);
-}
+.score:nth-child(1) { border-left: 4px solid var(--primary); }
+.score:nth-child(2) { border-left: 4px solid var(--secondary); }
+.score:nth-child(3) { border-left: 4px solid var(--accent); }
 
 .score-x {
-    color: var(--player-x, #ff6b6b);
+    color: var(--primary);
 }
 
 .score-o {
-    color: var(--player-o, #4ecdc4);
+    color: var(--secondary);
 }
 
 .score-tie {
@@ -206,8 +276,14 @@ h1 {
 
 /* Mode Buttons */
 .game-modes {
-    margin-top: 1.5rem;
+    margin: 2rem 0;
     text-align: center;
+}
+
+.game-modes h3 {
+    color: var(--text);
+    margin-bottom: 1rem;
+    font-size: 1rem;
 }
 
 .mode-buttons {
@@ -215,64 +291,117 @@ h1 {
     justify-content: center;
     gap: 1rem;
     margin-top: 0.5rem;
+    flex-wrap: wrap;
 }
 
-.mode-btn {
-    background: var(--card-bg);
-    border: 2px solid var(--card-border);
-    color: var(--text);
-    padding: 0.75rem 1.25rem;
-    cursor: pointer;
+.mode-button {
+    background: var(--primary);
+    color: var(--button-text);
+    border: 2px solid var(--primary);
+    padding: 0.75rem 1.5rem;
     font-family: 'Press Start 2P', cursive;
-    font-size: 0.7rem;
-    transition: all 0.2s ease;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.mode-btn:hover,
-.mode-btn:focus {
-    background: #f0f0f0;
-    border-color: #999;
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+button:hover::before {
+    opacity: 1;
+}
+
+button:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:focus {
     outline: none;
+    box-shadow: 0 0 0 3px var(--accent), 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .mode-btn.active {
-    background: #3498db;
-    color: white;
-    border-color: #2980b9;
+    background: var(--primary);
+    color: var(--button-text);
+    border-color: var(--primary);
+    box-shadow: 0 4px 8px var(--shadow);
 }
 
 /* Back to Home Link */
 .back-to-home {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
 }
 
 .back-to-home a {
-    color: #3498db;
+    color: var(--link-color);
     text-decoration: none;
     font-size: 0.8rem;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .back-to-home a:hover,
 .back-to-home a:focus {
-    color: #2980b9;
-    text-decoration: underline;
+    color: var(--link-hover);
+    text-decoration: none;
     outline: none;
+    transform: translateX(-4px);
+}
+
+.back-to-home a::before {
+    content: '←';
+    transition: transform 0.2s ease;
+}
+
+.back-to-home a:hover::before {
+    transform: translateX(-4px);
 }
 
 /* Responsive Design */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .game-container {
-        padding: 0.5rem;
+        margin: 1rem;
+        padding: 1rem;
     }
     
     h1 {
         font-size: 1.5rem;
+        margin-bottom: 1rem;
     }
     
     .status {
         font-size: 1rem;
+        margin-bottom: 1rem;
     }
     
     .cell {
@@ -280,13 +409,13 @@ h1 {
     }
     
     .scoreboard {
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.75rem;
     }
     
     .score {
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
+        min-width: 80px;
     }
     
     .mode-buttons {
@@ -297,16 +426,97 @@ h1 {
     .mode-btn {
         width: 100%;
         max-width: 200px;
-        justify-content: center;
+    }
+    
+    button {
+        padding: 0.6rem 1rem;
+        font-size: 0.7rem;
     }
 }
 
-/* Animation for winning cells */
+/* Animations */
 @keyframes glow {
-    from {
-        box-shadow: 0 0 10px -10px #3498db;
+    0% {
+        box-shadow: 0 0 10px -5px var(--accent);
+        transform: scale(1);
     }
+    50% {
+        box-shadow: 0 0 25px 10px var(--accent);
+        transform: scale(1.03);
+    }
+    100% {
+        box-shadow: 0 0 10px -5px var(--accent);
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Confetti effect */
+#confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #f00;
+    opacity: 0.8;
+    animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes confetti-fall {
     to {
-        box-shadow: 0 0 20px 5px #3498db;
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
     }
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Smooth transitions */
+button, .cell, .mode-btn, .back-to-home a {
+    transition: all 0.3s ease;
+}
+
+/* Improve focus states */
+button:focus-visible,
+.cell:focus-visible,
+.mode-btn:focus-visible,
+.back-to-home a:focus-visible {
+    transform: scale(1.02);
+    z-index: 2;
 }

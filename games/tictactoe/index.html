@@ -1,13 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="retro" class="theme-retro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="../../css/themes.css">
     <link rel="stylesheet" href="tictactoe.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
 </head>
 <body>
+    <!-- Confetti container -->
+    <div id="confetti-container"></div>
+    
     <div class="game-container">
         <h1>Tic-Tac-Toe</h1>
         <div class="status" id="status">Player X's Turn</div>
@@ -36,6 +51,25 @@
         </div>
     </div>
     
+    <!-- Sound Manager must be loaded first -->
+    <script src="../../js/soundManager.js"></script>
     <script src="tictactoe.js"></script>
+    
+    <!-- Initialize sound on first interaction -->
+    <script>
+        // Ensure sound manager is initialized on first interaction
+        function initializeSound() {
+            if (window.soundManager && window.soundManager.audioContext && window.soundManager.audioContext.state === 'suspended') {
+                window.soundManager.audioContext.resume();
+            }
+            // Remove this event listener after first interaction
+            document.removeEventListener('click', initializeSound);
+            document.removeEventListener('keydown', initializeSound);
+        }
+        
+        // Add event listeners for first interaction
+        document.addEventListener('click', initializeSound);
+        document.addEventListener('keydown', initializeSound);
+    </script>
 </body>
 </html>

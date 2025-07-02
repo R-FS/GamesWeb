@@ -68,7 +68,7 @@
                         <h3>Tic-Tac-Toe</h3>
                         <p class="game-description">Classic 3x3 grid strategy game</p>
                         <div class="game-stats">
-                            <span class="wins">🏆 Wins: 0</span>
+                            <span class="wins">🏆 Wins: <span id="tictactoe-wins">0</span></span>
                         </div>
                     </div>
                 </a>
@@ -124,8 +124,19 @@
         }
         
         // Update high scores when the page loads
+        function updateTicTacToeWins() {
+            let aiWins = 0;
+            try {
+                const tttScores = JSON.parse(localStorage.getItem('tictactoeScores'));
+                if (tttScores && tttScores.aiGames && typeof tttScores.aiGames.X === 'number') {
+                    aiWins = tttScores.aiGames.X;
+                }
+            } catch (e) {}
+            document.getElementById('tictactoe-wins').textContent = aiWins;
+        }
         document.addEventListener('DOMContentLoaded', () => {
             updateSnakeHighScore();
+            updateTicTacToeWins();
             
             // Also update when the page becomes visible again (in case high score changed in another tab)
             document.addEventListener('visibilitychange', () => {

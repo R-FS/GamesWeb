@@ -4,38 +4,235 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
-    <link rel="stylesheet" href="../../css/snake.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 1rem auto;
+            padding: 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 4px solid #4a4a8f;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            color: #4ade80;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 0 #166534;
+            letter-spacing: 1px;
+        }
+        
+        #gameCanvas {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 1/1;
+            background: #0f172a;
+            border: 4px solid #334155;
+            border-radius: 8px;
+            margin: 1rem auto;
+            display: block;
+            image-rendering: pixelated;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #334155;
+            border-radius: 8px;
+        }
+        
+        .score, .high-score {
+            color: #ffd700;
+            font-size: 0.9rem;
+            margin: 0;
+            text-shadow: 1px 1px 0 #000;
+        }
+        
+        .controls {
+            margin: 1.5rem 0 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            position: relative;
+            background: #4a4a8f;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0 #000;
+            box-shadow: 0 4px 0 #3a3a6e, 0 4px 4px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #3a3a6e, 0 2px 2px rgba(0,0,0,0.2);
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        button:hover::before {
+            opacity: 1;
+        }
+        
+        #startBtn {
+            background: #4ade80;
+            box-shadow: 0 4px 0 #166534, 0 4px 4px rgba(0,0,0,0.2);
+        }
+        
+        #startBtn:active {
+            box-shadow: 0 2px 0 #166534, 0 2px 2px rgba(0,0,0,0.2);
+        }
+        
+        #backBtn {
+            background: #f87171;
+            box-shadow: 0 4px 0 #991b1b, 0 4px 4px rgba(0,0,0,0.2);
+        }
+        
+        #backBtn:active {
+            box-shadow: 0 2px 0 #991b1b, 0 2px 2px rgba(0,0,0,0.2);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .score, .high-score {
+                font-size: 0.7rem;
+            }
+            
+            button {
+                padding: 0.6rem 1rem;
+                font-size: 0.6rem;
+            }
+            
+            .controls {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            #gameCanvas {
+                width: 100%;
+                height: auto;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.7rem;
+            }
+        }
+        
+        .instructions {
+            margin: 1.5rem 0;
+            text-align: center;
+            line-height: 1.8;
+        }
+        
+        .instructions p {
+            margin: 0.7rem 0;
+        }
+        
+        .food-color {
+            color: #ff0000;
+        }
+    </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="game-header">
-            <h1>🐍 Snake</h1>
-            <div class="score-container">
-                <span>Score: </span>
-                <span id="score">0</span>
-            </div>
+        <h1>🐍 Snake Game</h1>
+        
+        <div class="game-info">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="high-score">High Score: <span id="highScore">0</span></div>
         </div>
         
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <canvas id="gameCanvas" width="400" height="400" tabindex="0"></canvas>
         
         <div class="controls">
-            <button id="resetBtn">Reset Game</button>
+            <button id="startBtn">Start Game</button>
+            <button id="resetBtn">Reset High Score</button>
+            <button id="backBtn">Back to Menu</button>
         </div>
         
         <div class="instructions">
-            <h3>How to Play:</h3>
-            <p>Use arrow keys to control the snake</p>
-            <p>Eat the food to grow longer</p>
-            <p>Avoid hitting the walls or yourself!</p>
-        </div>
-        
-        <div class="back-to-home">
-            <a href="../../index.html">← Back to Games</a>
+            <p>• Use <strong>Arrow Keys</strong> to control the snake</p>
+            <p>• Press <strong>Space</strong> to Pause/Resume</p>
+            <p>• Eat the <span class="food-color">food</span> to grow and score points</p>
+            <p>• Avoid hitting the walls and yourself!</p>
         </div>
     </div>
     
-    <script src="../../js/soundManager.js"></script>
-    <script src="snake.js"></script>
+    <!-- Game Script -->
+    <script src="snake-game.js"></script>
+    
+    <style>
+        /* Ensure canvas has focus outline for better accessibility */
+        #gameCanvas:focus {
+            outline: 2px solid #4ade80;
+            outline-offset: 2px;
+        }
+    </style>
 </body>
 </html>

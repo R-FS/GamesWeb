@@ -10,6 +10,14 @@ class SoundManager {
         // Debug log
         console.log('SoundManager: Initializing with volume:', this.volume, 'muted:', this.muted);
         
+        // Game-specific sounds
+        this.gameSounds = {
+            'snake': {
+                'eat': () => import('../../sounds/eat.js').then(module => module.default),
+                'gameOver': () => import('../../sounds/gameOver.js').then(module => module.default)
+            }
+        };
+        
         // Initialize on first user interaction
         this.initializeOnInteraction();
     }
@@ -31,15 +39,23 @@ class SoundManager {
     }
 
     // Initialize audio context
-    initialize() {
-        if (this.initialized) return;
+    async initialize() {
+        if (this.initialized) return Promise.resolve();
         
         try {
             console.log('SoundManager: Creating audio context');
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Resume audio context if it was suspended
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+            
             this.createSounds();
             this.initialized = true;
             console.log('SoundManager: Initialized successfully');
+            
+            return Promise.resolve();
             
             // Auto-resume if suspended
             if (this.audioContext.state === 'suspended') {
@@ -166,9 +182,31 @@ class SoundManager {
     }
 
     // Play a sound by name
-    play(soundName) {
-        if (this.muted || !this.sounds[soundName]) return;
-        this.sounds[soundName]();
+    async play(soundName, gameId = null) {
+        if (this.muted || !this.initialized) return;
+        
+        // Check for game-specific sounds first
+        if (gameId && this.gameSounds[gameId] && this.gameSounds[gameId][soundName]) {
+            try {
+                const soundModule = await this.gameSounds[gameId][soundName]();
+                if (soundModule && typeof soundModule.play === 'function') {
+                    soundModule.play();
+                    return;
+                }
+            } catch (e) {
+                console.warn(`Error loading game sound '${soundName}':`, e);
+            }
+        }
+        
+        // Fall back to built-in sounds
+        if (this.sounds[soundName]) {
+            const sound = this.sounds[soundName];
+            sound.volume = this.volume;
+            sound.currentTime = 0;
+            sound.play().catch(e => console.warn('Error playing sound:', e));
+        } else {
+            console.warn(`Sound '${soundName}' not found`);
+        }
     }
 
     // Toggle mute
@@ -192,3 +230,148 @@ window.soundManager = new SoundManager();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = window.soundManager;
 }
+
+class GameSoundManager {
+    constructor(gameId) {
+        this.gameId = gameId;
+        this.sounds = {};
+        this.muted = localStorage.getItem(`soundMuted_${gameId}`) === 'true' || false;
+        this.volume = parseFloat(localStorage.getItem(`soundVolume_${gameId}`)) || 0.5;
+        this.initialized = false;
+        this.initialize();
+    }
+
+    initialize() {
+        this.setupMuteButton();
+        this.loadGameSounds();
+    }
+
+    setupMuteButton() {
+        const muteBtn = document.querySelector(`.mute-btn[data-game="${this.gameId}"]`);
+        if (muteBtn) {
+            muteBtn.addEventListener('click', () => this.toggleMute());
+            
+            // Atualizar estado inicial do botão
+            const savedMuted = localStorage.getItem(`soundMuted_${this.gameId}`);
+            if (savedMuted === 'true') {
+                this.muted = true;
+                muteBtn.classList.add('muted');
+            }
+        }
+    }
+
+    loadGameSounds() {
+        // Carregar sons específicos do jogo
+        const soundsPath = `games/${this.gameId}/sounds/`;
+        const sounds = {
+            'click': `${soundsPath}click.mp3`,
+            'game-over': `${soundsPath}game-over.mp3`,
+            'score': `${soundsPath}score.mp3`,
+            'error': `${soundsPath}error.mp3`,
+            'success': `${soundsPath}success.mp3`
+        };
+
+        // Criar objetos Audio para cada som
+        Object.entries(sounds).forEach(([name, path]) => {
+            this.sounds[name] = new Audio(path);
+        });
+    }
+
+    toggleMute() {
+        this.muted = !this.muted;
+        const muteBtn = document.querySelector(`.mute-btn[data-game="${this.gameId}"]`);
+        if (muteBtn) {
+            muteBtn.classList.toggle('muted');
+        }
+        localStorage.setItem(`soundMuted_${this.gameId}`, this.muted);
+    }
+
+    async play(soundName, volume = this.volume) {
+        try {
+            if (this.muted) return;
+            
+            // Primeiro tenta usar o gerenciador de som principal
+            if (window.soundManager) {
+                try {
+                    await window.soundManager.play(soundName, this.gameId);
+                    return; // Se o som principal foi reproduzido com sucesso, sai da função
+                } catch (e) {
+                    console.warn(`Falha ao reproduzir som '${soundName}' pelo gerenciador principal:`, e);
+                    // Continua para tentar reproduzir o som localmente
+                }
+            }
+            
+            // Se não houver gerenciador principal ou falhar, tenta reproduzir localmente
+            const sound = this.sounds[soundName];
+            if (sound) {
+                try {
+                    sound.currentTime = 0;
+                    sound.volume = volume;
+                    const playPromise = sound.play();
+                    
+                    // Trata a promessa de reprodução para evitar erros não capturados
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error(`Erro ao reproduzir som '${soundName}':`, error);
+                        });
+                    }
+                } catch (e) {
+                    console.error(`Erro ao reproduzir som local '${soundName}':`, e);
+                }
+            } else {
+                console.warn(`Som '${soundName}' não encontrado para o jogo '${this.gameId}'`);
+            }
+        } catch (e) {
+            console.error(`Erro inesperado ao reproduzir som '${soundName}':`, e);
+        }
+    }
+
+    stop(soundName) {
+        if (this.sounds[soundName]) {
+            this.sounds[soundName].pause();
+            this.sounds[soundName].currentTime = 0;
+        }
+    }
+
+    setVolume(volume) {
+        this.volume = volume;
+        Object.values(this.sounds).forEach(sound => {
+            sound.volume = volume;
+        });
+    }
+
+    getVolume() {
+        return this.volume;
+    }
+
+    isMuted() {
+        return this.muted;
+    }
+
+    static create(gameId) {
+        return new GameSoundManager(gameId);
+    }
+}
+
+// Função para inicializar o sound manager do jogo atual
+function initializeGameSoundManager() {
+    const gameId = window.location.pathname.split('/').pop().split('.')[0];
+    if (gameId) {
+        window.gameSoundManager = GameSoundManager.create(gameId);
+    }
+}
+
+// Inicializar quando DOM estiver pronto
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Initialize main sound manager first
+        if (window.soundManager) {
+            await window.soundManager.initialize();
+        }
+        
+        // Initialize game sound manager
+        initializeGameSoundManager();
+    } catch (error) {
+        console.error('Error initializing sound system:', error);
+    }
+});

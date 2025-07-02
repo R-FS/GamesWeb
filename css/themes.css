@@ -1,169 +1,137 @@
-/* Retro Theme (Only Theme) */
+/* Temas gerais */
 :root {
-    --primary: #ff6b6b;
-    --secondary: #4ecdc4;
-    --accent: #ffe66d;
-    --background: #2d3436;
-    --surface: #1e272e;
-    --text: #f7f1e3;
-    --text-secondary: #d1ccc0;
-    --border: #3d3d3d;
-    --shadow: rgba(0, 0, 0, 0.4);
-    --card-bg: rgba(45, 52, 54, 0.8);
-    --card-border: #ff6b6b;
-    --card-hover: rgba(255, 107, 107, 0.2);
-    --button-text: #1e272e;
-    --button-hover: #ff5252;
-    --input-bg: #2d3436;
-    --input-text: #f7f1e3;
-    --input-border: #4a5658;
-    --input-focus: #4ecdc4;
-    --header-bg: rgba(30, 39, 46, 0.9);
-    --footer-bg: #1e272e;
-    --link-color: #4ecdc4;
-    --link-hover: #ffe66d;
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --accent-color: #ff4444;
 }
 
-/* Retro Theme */
-[data-theme="retro"],
-.theme-retro {
-    --primary: #ff6b6b;
-    --secondary: #4ecdc4;
-    --accent: #ffe66d;
-    --background: #2d3436;
-    --surface: #1e272e;
-    --text: #f7f1e3;
-    --text-secondary: #d1ccc0;
-    --border: #3d3d3d;
-    --shadow: rgba(0, 0, 0, 0.4);
-    --card-bg: rgba(45, 52, 54, 0.8);
-    --card-border: #ff6b6b;
-    --card-hover: rgba(255, 107, 107, 0.2);
-    --button-text: #1e272e;
-    --button-hover: #ff5252;
-    --input-bg: #2d3436;
-    --input-text: #f7f1e3;
-    --input-border: #4a5658;
-    --input-focus: #4ecdc4;
-    --header-bg: rgba(30, 39, 46, 0.9);
-    --footer-bg: #1e272e;
-    --link-color: #4ecdc4;
-    --link-hover: #ffe66d;
+/* Tema Snake */
+[data-theme="snake"] {
+    --bg-color: #000;
+    --text-color: #00ff00;
+    --accent-color: #00cc00;
+    --snake-grid-color: #1a1a1a;
 }
 
-/* Retro Theme for specific selectors */
-[data-theme="retro"],
-.theme-retro {
-    --primary: #ff6b6b;
-    --secondary: #4ecdc4;
-    --accent: #ffe66d;
-    --background: #2d3436;
-    --surface: #1e272e;
-    --text: #f7f1e3;
-    --text-secondary: #d1ccc0;
-    --border: #3d3d3d;
-    --shadow: rgba(0, 0, 0, 0.4);
-    --card-bg: rgba(45, 52, 54, 0.8);
-    --card-border: #ff6b6b;
-    --card-hover: rgba(255, 107, 107, 0.2);
-    --button-text: #1e272e;
-    --button-hover: #ff5252;
-    --input-bg: #2d3436;
-    --input-text: #f7f1e3;
-    --input-border: #4a5658;
-    --input-focus: #4ecdc4;
-    --header-bg: rgba(30, 39, 46, 0.9);
-    --footer-bg: #1e272e;
-    --link-color: #4ecdc4;
-    --link-hover: #ffe66d;
+/* Tema Tic-Tac-Toe */
+[data-theme="tictactoe"] {
+    --bg-color: #f0f0f0;
+    --text-color: #333;
+    --accent-color: #ff6b6b;
+    --board-color: #d4d4d4;
 }
 
-/* Apply theme to body */
+/* Tema Memory Match */
+[data-theme="memory"] {
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --accent-color: #3498db;
+    --card-bg: #34495e;
+}
+
+/* Estilos comuns */
 body {
-    background-color: var(--background);
-    color: var(--text);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Estilos específicos para cada jogo */
+.game-container {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.snake-grid {
+    background-color: var(--snake-grid-color);
+}
+
+.tic-tac-toe-board {
+    background-color: var(--board-color);
+}
+
+.memory-card {
+    background-color: var(--card-bg);
 }
 
 /* Update game cards */
 .game-card {
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
+    border: 1px solid var(--accent-color);
     transition: all 0.3s ease;
 }
 
 .game-card:hover {
-    background: var(--card-hover);
+    background: var(--accent-color);
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px var(--shadow);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Update header and footer */
 header {
-    background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
-    border-bottom: 4px solid var(--primary);
+    background: linear-gradient(180deg, var(--bg-color) 0%, transparent 100%);
+    border-bottom: 4px solid var(--accent-color);
 }
 
 footer {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
+    background: var(--bg-color);
+    border-top: 1px solid var(--accent-color);
 }
 
 /* Update buttons */
 .btn {
-    background: var(--primary);
+    background: var(--accent-color);
     color: white;
-    border: 2px solid var(--primary);
+    border: 2px solid var(--accent-color);
     transition: all 0.3s ease;
 }
 
 .btn:hover {
-    background: var(--secondary);
-    border-color: var(--secondary);
+    background: var(--text-color);
+    border-color: var(--text-color);
     transform: translateY(-2px);
 }
 
 /* Update form elements */
 input, select, textarea {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border);
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
 }
 
 /* Update settings page */
 .settings-container {
-    background: var(--surface);
-    border: 2px solid var(--primary);
-    box-shadow: 0 0 20px var(--shadow);
+    background: var(--bg-color);
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .setting-item {
     background: var(--card-bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--accent-color);
 }
 
 /* Update toggle switches */
 .switch .slider {
-    background-color: var(--border);
+    background-color: var(--accent-color);
 }
 
 input:checked + .slider {
-    background-color: var(--primary);
+    background-color: var(--text-color);
 }
 
 /* Update volume slider */
 .volume-slider {
-    background: var(--border) !important;
+    background: var(--accent-color) !important;
 }
 
 .volume-slider::-webkit-slider-thumb {
-    background: var(--primary);
+    background: var(--text-color);
 }
 
 /* Update notifications */
 .notification {
-    background: var(--surface) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 12px var(--shadow);
+    background: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }

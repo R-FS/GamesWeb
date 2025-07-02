@@ -34,27 +34,30 @@
                 <div class="header-text">
                     <h1>🎮 Retro Arcade</h1>
                     <p class="subtitle">Play classic games right in your browser</p>
+                    <p class="game-count">🎮 3 Games Available</p>
                 </div>
                 <div class="header-controls">
-                    <a href="settings.html" class="btn btn-settings" aria-label="Settings">
-                        ⚙️
-                    </a>
-                    <button id="muteBtn" class="mute-btn" aria-label="Toggle sound">
-                        <span class="sound-on">🔊</span>
-                        <span class="sound-off">🔇</span>
-                    </button>
+                    <div class="sound-controls">
+                        <button id="muteBtn" class="mute-btn" aria-label="Toggle sound">
+                            <span class="sound-on">🔊</span>
+                            <span class="sound-off">🔇</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </header>
         
         <main class="games-container">
-            <h2 class="games-title">Choose a Game</h2>
             <div class="games-grid">
                 <!-- Snake Game -->
-                <a href="games/snake/index.html" class="game-card">
+                <a href="games/snake/index.html" class="game-card" id="snake-card">
                     <div class="game-icon">
                         <div class="game-placeholder">🐍</div>
                         <h3>Snake</h3>
+                        <p class="game-description">Classic snake game with retro twist</p>
+                        <div class="game-stats">
+                            <span class="high-score">🏆 High Score: <span id="snake-high-score">0</span></span>
+                        </div>
                     </div>
                 </a>
                 
@@ -63,6 +66,10 @@
                     <div class="game-icon">
                         <div class="game-placeholder">🎯</div>
                         <h3>Tic-Tac-Toe</h3>
+                        <p class="game-description">Classic 3x3 grid strategy game</p>
+                        <div class="game-stats">
+                            <span class="wins">🏆 Wins: 0</span>
+                        </div>
                     </div>
                 </a>
                 
@@ -71,6 +78,10 @@
                     <div class="game-icon">
                         <div class="game-placeholder">🧩</div>
                         <h3>Memory Match</h3>
+                        <p class="game-description">Match pairs of cards in this memory challenge</p>
+                        <div class="game-stats">
+                            <span class="best-time">⏱️ Best Time: -</span>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -97,14 +108,42 @@
         document.addEventListener('DOMContentLoaded', applyCurrentTheme);
         
         // Re-apply theme when page is shown (including when navigating back)
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
                 applyCurrentTheme();
             }
         });
         
-        // Initial theme application
-        applyCurrentTheme();
+        // Update high score display for Snake game
+        function updateSnakeHighScore() {
+            const highScore = localStorage.getItem('snakeHighScore') || 0;
+            const highScoreElement = document.getElementById('snake-high-score');
+            if (highScoreElement) {
+                highScoreElement.textContent = highScore;
+            }
+        }
+        
+        // Update high scores when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSnakeHighScore();
+            
+            // Also update when the page becomes visible again (in case high score changed in another tab)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    updateSnakeHighScore();
+                }
+            });
+        });
+        
+        // Listen for storage events to update high score in real-time across tabs
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'snakeHighScore') {
+                const highScoreElement = document.getElementById('snake-high-score');
+                if (highScoreElement) {
+                    highScoreElement.textContent = event.newValue || '0';
+                }
+            }
+        });
     </script>
 </body>
 </html>

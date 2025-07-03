@@ -51,7 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Start with easy difficulty
     startNewGame('easy');
-    
+
+    // Show wins area
+    updateMemoryWinsDisplay();
+
+    // Add reset scores button handler
+    const resetScoresBtn = document.getElementById('resetScoresBtn');
+    if (resetScoresBtn) {
+        resetScoresBtn.addEventListener('click', () => {
+            if (window.soundManager) sound.play('select');
+            localStorage.setItem('memoryWins', JSON.stringify({easy:0, medium:0, hard:0}));
+            updateMemoryWinsDisplay();
+        });
+    }
+
     // Show controls help
     showNotification('Find all matching pairs!');
 });
@@ -118,6 +131,7 @@ function startNewGame(difficulty) {
     matches = 0;
     seconds = 0;
     gameStarted = false;
+    updateMemoryWinsDisplay();
     lockBoard = false;
     hasFlippedCard = false;
     
@@ -301,11 +315,39 @@ function endGame() {
     
     // Calculate score (lower moves and time is better)
     const score = Math.max(0, 1000 - (moves * 10) - (seconds * 5));
-    
+
+    // Increment wins for current difficulty
+    incrementMemoryWins(currentDifficulty);
+    updateMemoryWinsDisplay();
+
     setTimeout(() => {
         winMessage.classList.add('show');
     }, 1000);
 }
+
+// Increment win count in localStorage
+function incrementMemoryWins(difficulty) {
+    const wins = JSON.parse(localStorage.getItem('memoryWins') || '{"easy":0,"medium":0,"hard":0}');
+    if (!wins[difficulty]) wins[difficulty] = 0;
+    wins[difficulty]++;
+    localStorage.setItem('memoryWins', JSON.stringify(wins));
+}
+
+// Update wins display area
+function updateMemoryWinsDisplay() {
+    const wins = JSON.parse(localStorage.getItem('memoryWins') || '{"easy":0,"medium":0,"hard":0}');
+    const winsArea = document.getElementById('memory-wins-area');
+    if (winsArea) {
+        winsArea.innerHTML = `
+            <span class="memory-win memory-win-easy">${wins.easy||0}</span>
+            <span class="memory-win memory-win-sep">|</span>
+            <span class="memory-win memory-win-medium">${wins.medium||0}</span>
+            <span class="memory-win memory-win-sep">|</span>
+            <span class="memory-win memory-win-hard">${wins.hard||0}</span>
+        `;
+    }
+}
+
 
 // Show a temporary notification
 function showNotification(message) {

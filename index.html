@@ -80,7 +80,14 @@
                         <h3>Memory Match</h3>
                         <p class="game-description">Match pairs of cards in this memory challenge</p>
                         <div class="game-stats">
-                            <span class="best-time">⏱️ Best Time: -</span>
+                            <span class="best-time">🏆 Wins: -</span>
+                            <span class="memory-wins-main" style="margin-left:10px;">
+                                <span id="memory-wins-easy" style="color:#4ecdc4;font-weight:bold;">0</span>
+                                <span style="color:#bbb;">|</span>
+                                <span id="memory-wins-medium" style="color:#ffd166;font-weight:bold;">0</span>
+                                <span style="color:#bbb;">|</span>
+                                <span id="memory-wins-hard" style="color:#ff6b6b;font-weight:bold;">0</span>
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -134,14 +141,22 @@
             } catch (e) {}
             document.getElementById('tictactoe-wins').textContent = aiWins;
         }
+        function updateMemoryWinsMain() {
+            const wins = JSON.parse(localStorage.getItem('memoryWins') || '{"easy":0,"medium":0,"hard":0}');
+            document.getElementById('memory-wins-easy').textContent = wins.easy || 0;
+            document.getElementById('memory-wins-medium').textContent = wins.medium || 0;
+            document.getElementById('memory-wins-hard').textContent = wins.hard || 0;
+        }
         document.addEventListener('DOMContentLoaded', () => {
             updateSnakeHighScore();
             updateTicTacToeWins();
-            
+            updateMemoryWinsMain();
             // Also update when the page becomes visible again (in case high score changed in another tab)
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
                     updateSnakeHighScore();
+                    updateTicTacToeWins();
+                    updateMemoryWinsMain();
                 }
             });
         });
